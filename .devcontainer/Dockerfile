@@ -1,8 +1,9 @@
 FROM python:latest
 
-# Install PostgreSQL client
+# Install PostgreSQL and MQTT client tools
 RUN apt-get update && apt-get install -y \
     postgresql-client \
+    mosquitto-clients \
     curl \
     git \
     build-essential \
