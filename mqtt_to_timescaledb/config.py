@@ -28,6 +28,6 @@ def build_connection_string(db_config):
     """Build PostgreSQL connection string from config dict."""
     return (
         f"host={db_config['host']} port={db_config['port']} "
-        f"database={db_config['name']} user={db_config['user']} "
+        f"dbname={db_config['name']} user={db_config['user']} "
         f"password={db_config['password']}"
     )
