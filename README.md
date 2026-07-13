@@ -2,8 +2,6 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/TigerDoug/codespace_test)
 
-https://codespaces.new/TigerDoug/codespace_test/tree/mqtt_workshop?devcontainer_path=.devcontainer/mqtt-to-dashboard/devcontainer.json
-
 A practical workshop for streaming manufacturing sensor data from MQTT to TimescaleDB on Tiger Cloud.
 
 ## Overview
