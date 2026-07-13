@@ -21,7 +21,7 @@
     "LC_ALL": "C.UTF-8",
     "PGTZ": "UTC"
   },
-  "forwardPorts": [3000, 5432],
+  "forwardPorts": [3000, 5432,1883],
   "portsAttributes": {
     "3000": {
       "label": "Grafana",
@@ -29,6 +29,10 @@
     },
     "5432": {
       "label": "PostgreSQL (external)",
+      "onAutoForward": "notify"
+    },
+    "1883": {
+      "label": "MQTT (unencrypted)",
       "onAutoForward": "notify"
     }
   },
