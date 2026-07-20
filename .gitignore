@@ -1,5 +1,4 @@
 # Credentials and secrets
-tiger-cloud-workshop_db-credentials.env
 .env
 .pgpass
 

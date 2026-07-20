@@ -58,7 +58,7 @@ The architecture separates concerns into modular components:
 
 3. **Fill in your Tiger Cloud credentials:**
    ```bash
-   # Edit tiger-cloud-workshop_db-credentials.env with:
+   # Edit .env with:
    PGPASSWORD=your-password
    PGUSER=your-username
    PGDATABASE=sensor_data
@@ -229,7 +229,7 @@ username `admin` and password `admin` (see `.devcontainer/docker-compose.yml`).
 
 1. In Grafana, go to **Connections → Data sources → Add data source → PostgreSQL**.
 2. Fill in your Tiger Cloud credentials (the same `PG*` values from
-   `tiger-cloud-workshop_db-credentials.env`):
+   `.env`):
    - **Host**: `PGHOST:PGPORT` (e.g. `your-host:39171`)
    - **Database**: `PGDATABASE` (e.g. `tsdb`)
    - **User**: `PGUSER` (e.g. `tsdbadmin`)
@@ -269,7 +269,7 @@ timeout 2 bash -c 'cat < /dev/null > /dev/tcp/54.160.239.103/1883' && echo "Port
 psql -h your-timescale-host -U your-username -d sensor_data -c "SELECT version();"
 
 # Verify credentials in environment file
-cat tiger-cloud-workshop_db-credentials.env | grep TIMESCALE
+cat .env | grep PG
 ```
 
 ### No Data Appearing in Database

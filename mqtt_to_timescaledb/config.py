@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 def load_config():
     """Load configuration from environment variables."""
-    load_dotenv('tiger-cloud-workshop_db-credentials.env')
+    load_dotenv()
 
     return {
         'mqtt': {
