@@ -40,11 +40,11 @@ The architecture separates concerns into modular components:
 3. **Fill in your Tiger Cloud credentials:**
    ```bash
    # Edit tiger-cloud-workshop_db-credentials.env with:
-   TIMESCALEDB_HOST=your-timescale-host
-   TIMESCALEDB_PORT=5432
-   TIMESCALEDB_NAME=sensor_data
-   TIMESCALEDB_USER=your-username
-   TIMESCALEDB_PASSWORD=your-password
+   PGPASSWORD=your-password
+   PGUSER=your-username
+   PGDATABASE=sensor_data
+   PGHOST=your-timescale-host
+   PGPORT=5432
    
    # Optional: Override default MQTT broker
    MQTT_HOST=your-mqtt-host
@@ -260,11 +260,11 @@ mqtt_to_timescaledb/
 |----------|---------|---------|
 | `MQTT_HOST` | `54.160.236.103` | MQTT broker hostname |
 | `MQTT_PORT` | `1883` | MQTT broker port |
-| `TIMESCALEDB_HOST` | `localhost` | TimescaleDB hostname |
-| `TIMESCALEDB_PORT` | `5432` | TimescaleDB port |
-| `TIMESCALEDB_NAME` | `sensor_data` | Database name |
-| `TIMESCALEDB_USER` | `postgres` | Database user |
-| `TIMESCALEDB_PASSWORD` | `password` | Database password |
+| `PGHOST` | `localhost` | TimescaleDB hostname |
+| `PGPORT` | `5432` | TimescaleDB port |
+| `PGDATABASE` | `sensor_data` | Database name |
+| `PGUSER` | `postgres` | Database user |
+| `PGPASSWORD` | `password` | Database password |
 
 ## Next Steps
 

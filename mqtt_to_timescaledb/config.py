@@ -15,11 +15,11 @@ def load_config():
             'subscribe_topic': 'UNS/manufacturing/#'
         },
         'database': {
-            'host': os.getenv('TIMESCALEDB_HOST', 'localhost'),
-            'port': os.getenv('TIMESCALEDB_PORT', '5432'),
-            'name': os.getenv('TIMESCALEDB_NAME', 'sensor_data'),
-            'user': os.getenv('TIMESCALEDB_USER', 'postgres'),
-            'password': os.getenv('TIMESCALEDB_PASSWORD', 'password'),
+            'host': os.getenv('PGHOST', 'localhost'),
+            'port': os.getenv('PGPORT', '5432'),
+            'name': os.getenv('PGDATABASE', 'sensor_data'),
+            'user': os.getenv('PGUSER', 'postgres'),
+            'password': os.getenv('PGPASSWORD', 'password'),
         }
     }
 
