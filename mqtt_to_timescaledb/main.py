@@ -3,6 +3,7 @@
 
 import logging
 import signal
+import threading
 
 from .config import load_config, build_connection_string
 from .database import TimescaleDBManager
@@ -27,11 +28,13 @@ def main():
         db_manager
     )
 
+    shutdown = threading.Event()
+
     def signal_handler(sig, frame):
-        logger.info("Shutting down...")
-        mqtt_reader.stop()
-        db_manager.close()
-        raise SystemExit(0)
+        # Keep the handler minimal: just signal the main thread to stop.
+        # Doing cleanup here can deadlock if the signal arrives mid-callback.
+        logger.info("Shutdown signal received")
+        shutdown.set()
 
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
@@ -40,10 +43,9 @@ def main():
     mqtt_reader.start()
 
     try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-        logger.info("Interrupted by user")
+        shutdown.wait()
+    finally:
+        logger.info("Shutting down...")
         mqtt_reader.stop()
         db_manager.close()
 

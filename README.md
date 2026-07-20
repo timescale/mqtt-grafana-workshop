@@ -149,12 +149,6 @@ The application will:
 4. Process incoming messages and store readings in the database
 5. Log all activities to console
 
-### Using Python Module Format
-
-```bash
-python -m mqtt_to_timescaledb
-```
-
 ### Graceful Shutdown
 
 Press `Ctrl+C` to trigger graceful shutdown:
