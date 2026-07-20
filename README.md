@@ -222,8 +222,7 @@ When you're done, sign out of the session:
 
 ## Visualize in Grafana
 
-Grafana runs alongside the app and is forwarded on port **3000**. Log in with
-username `admin` and password `admin` (see `.devcontainer/docker-compose.yml`).
+Grafana runs alongside the app and is forwarded on port **3000**. Open with the 'open in browser' icon in the PORTS tab. Log in with username `admin` and password `admin` (see `.devcontainer/docker-compose.yml`).
 
 ### 1. Add the TimescaleDB data source
 
