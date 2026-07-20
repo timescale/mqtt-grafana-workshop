@@ -108,6 +108,14 @@ psql -f mqtt_to_timescaledb/sql/tag_history.sql
 
 #### Verify the tables
 
+Sign in to an interactive `psql` session:
+
+```bash
+psql
+```
+
+Then run the verification commands:
+
 ```sql
 -- List all tables
 \dt
@@ -118,6 +126,12 @@ psql -f mqtt_to_timescaledb/sql/tag_history.sql
 
 -- Check if tag_history is a hypertable
 SELECT * FROM timescaledb_information.hypertables;
+```
+
+When you're done, sign out of the session:
+
+```sql
+\q
 ```
 
 ### Query Sensor Data
