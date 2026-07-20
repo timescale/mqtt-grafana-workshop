@@ -234,6 +234,13 @@ Grafana runs alongside the app and is forwarded on port **3000**. Open with the 
    - **User**: `PGUSER` (e.g. `tsdbadmin`)
    - **Password**: `PGPASSWORD`
    - **TLS/SSL Mode**: `require`
+
+   > ⚠️ **The Host field must include the port**, joined with a colon
+   > (`your-host:39171`). Tiger Cloud does **not** use the default `5432`, and
+   > Grafana has no separate port field — if you enter only the hostname the
+   > connection will fail. Also set **TLS/SSL Mode** to `require`; Tiger Cloud
+   > rejects unencrypted connections.
+
 3. Click **Save & test** — you should see a success message.
 
 ### 2. Import the dashboard
