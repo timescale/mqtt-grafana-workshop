@@ -193,6 +193,14 @@ The application logs important events:
 
 ## Query Sensor Data
 
+Sign in to an interactive `psql` session:
+
+```bash
+psql
+```
+
+Then run the queries:
+
 ```sql
 -- Get latest readings for a specific tag
 SELECT time, value, tag_id 
@@ -201,21 +209,15 @@ WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
 ORDER BY time DESC 
 LIMIT 10;
 
--- Aggregate readings by hour
-SELECT 
-  time_bucket('1 hour', time) AS hour,
-  tag_id,
-  AVG(value) AS avg_value,
-  MAX(value) AS max_value,
-  MIN(value) AS min_value
-FROM tag_history
-WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
-GROUP BY hour, tag_id
-ORDER BY hour DESC;
-
 -- Get metadata for all tags
 SELECT tag_id, tag_name, unit, description 
 FROM tag_meta;
+```
+
+When you're done, sign out of the session:
+
+```sql
+\q
 ```
 
 ## Visualize in Grafana
