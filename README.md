@@ -59,10 +59,10 @@ Open a terminal and subscribe to the manufacturing sensor topics:
 
 ```bash
 # Subscribe to all manufacturing sensors
-mosquitto_sub -h 54.160.236.103 -p 1883 -t "UNS/manufacturing/#" -v
+mosquitto_sub -h 54.160.239.103 -p 1883 -t "UNS/manufacturing/#" -v
 
 # Or subscribe to a specific machine
-mosquitto_sub -h 54.160.236.103 -p 1883 -t "UNS/manufacturing/plant1/area1/machine1/#" -v
+mosquitto_sub -h 54.160.239.103 -p 1883 -t "UNS/manufacturing/plant1/area1/machine1/#" -v
 ```
 
 
