@@ -134,33 +134,6 @@ When you're done, sign out of the session:
 \q
 ```
 
-### Query Sensor Data
-
-```sql
--- Get latest readings for a specific tag
-SELECT time, value, tag_id 
-FROM tag_history 
-WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
-ORDER BY time DESC 
-LIMIT 10;
-
--- Aggregate readings by hour
-SELECT 
-  time_bucket('1 hour', time) AS hour,
-  tag_id,
-  AVG(value) AS avg_value,
-  MAX(value) AS max_value,
-  MIN(value) AS min_value
-FROM tag_history
-WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
-GROUP BY hour, tag_id
-ORDER BY hour DESC;
-
--- Get metadata for all tags
-SELECT tag_id, tag_name, unit, description 
-FROM tag_meta;
-```
-
 ## How to Run the Python Code
 
 ### Quick Start
@@ -196,6 +169,33 @@ The application logs important events:
 2024-07-11 10:15:23 - mqtt_to_timescaledb - INFO - Connected to TimescaleDB
 2024-07-11 10:15:24 - mqtt_to_timescaledb - INFO - Connected to MQTT broker
 2024-07-11 10:15:25 - mqtt_to_timescaledb - INFO - Inserted plant1/area1/machine1/bearing_temperature: 65.3 °C at 2024-07-11 10:30:00
+```
+
+## Query Sensor Data
+
+```sql
+-- Get latest readings for a specific tag
+SELECT time, value, tag_id 
+FROM tag_history 
+WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
+ORDER BY time DESC 
+LIMIT 10;
+
+-- Aggregate readings by hour
+SELECT 
+  time_bucket('1 hour', time) AS hour,
+  tag_id,
+  AVG(value) AS avg_value,
+  MAX(value) AS max_value,
+  MIN(value) AS min_value
+FROM tag_history
+WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
+GROUP BY hour, tag_id
+ORDER BY hour DESC;
+
+-- Get metadata for all tags
+SELECT tag_id, tag_name, unit, description 
+FROM tag_meta;
 ```
 
 ## Troubleshooting
