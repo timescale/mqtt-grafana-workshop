@@ -27,14 +27,30 @@ The architecture separates concerns into modular components:
 
 ## Installation
 
-1. **Install Python dependencies:**
-   ```bash
-   pip install -r requirements.txt
+1. **Verify your environment is set up correctly:**
+
+   The devcontainer installs everything automatically, so start by confirming
+   each tool is available:
+
+   # Python + dependencies (paho-mqtt, psycopg2, python-dotenv)
+   python3 -c "import paho.mqtt.client, psycopg2, dotenv; print('Python dependencies OK')"
+
+   # Mosquitto MQTT client
+   mosquitto_sub --version
+
+   # PostgreSQL client
+   psql --version
+
+   # Grafana (runs on port 3000)
+   curl -s http://localhost:3000/api/health
    ```
+
+   Each command should run without errors
+
 
 2. **Create environment file:**
    ```bash
-   cp .env.example tiger-cloud-workshop_db-credentials.env
+   cp .env.example .env
    ```
 
 3. **Fill in your Tiger Cloud credentials:**
