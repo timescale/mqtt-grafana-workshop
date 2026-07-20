@@ -43,7 +43,10 @@ def main():
     mqtt_reader.start()
 
     try:
-        shutdown.wait()
+        # Wait in short slices so the main thread returns to the interpreter
+        # regularly and pending signal handlers are guaranteed to run.
+        while not shutdown.wait(1):
+            pass
     finally:
         logger.info("Shutting down...")
         mqtt_reader.stop()
