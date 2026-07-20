@@ -32,6 +32,8 @@ The architecture separates concerns into modular components:
    The devcontainer installs everything automatically, so start by confirming
    each tool is available:
 
+   ```bash
+
    # Python + dependencies (paho-mqtt, psycopg2, python-dotenv)
    python3 -c "import paho.mqtt.client, psycopg2, dotenv; print('Python dependencies OK')"
 
@@ -43,6 +45,7 @@ The architecture separates concerns into modular components:
 
    # Grafana (runs on port 3000)
    curl -s http://localhost:3000/api/health
+   
    ```
 
    Each command should run without errors
