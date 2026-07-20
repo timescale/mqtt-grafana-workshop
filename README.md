@@ -156,6 +156,13 @@ Press `Ctrl+C` to trigger graceful shutdown:
 - Closes database connection
 - Logs shutdown information
 
+> **Running in a browser-based Codespace?** `Ctrl+C` may be intercepted by the
+> browser and never reach the application. If pressing `Ctrl+C` does nothing,
+> the simplest fix is to **kill the terminal** — click the trash-can icon on the
+> terminal panel (or run *Terminal: Kill the Active Terminal Instance* from the
+> Command Palette) and open a new one. Opening the Codespace in the VS Code
+> desktop app also restores normal `Ctrl+C` behavior.
+
 ### Monitor Logs
 
 The application logs important events:
@@ -191,6 +198,36 @@ ORDER BY hour DESC;
 SELECT tag_id, tag_name, unit, description 
 FROM tag_meta;
 ```
+
+## Visualize in Grafana
+
+Grafana runs alongside the app and is forwarded on port **3000**. Log in with
+username `admin` and password `admin` (see `.devcontainer/docker-compose.yml`).
+
+### 1. Add the TimescaleDB data source
+
+1. In Grafana, go to **Connections → Data sources → Add data source → PostgreSQL**.
+2. Fill in your Tiger Cloud credentials (the same `PG*` values from
+   `tiger-cloud-workshop_db-credentials.env`):
+   - **Host**: `PGHOST:PGPORT` (e.g. `your-host:39171`)
+   - **Database**: `PGDATABASE` (e.g. `tsdb`)
+   - **User**: `PGUSER` (e.g. `tsdbadmin`)
+   - **Password**: `PGPASSWORD`
+   - **TLS/SSL Mode**: `require`
+3. Click **Save & test** — you should see a success message.
+
+### 2. Import the dashboard
+
+1. Go to **Dashboards → New → Import**.
+2. Click **Upload dashboard JSON file** and choose
+   [grafana/sensor_readings_dashboard.json](grafana/sensor_readings_dashboard.json)
+   (or paste its contents).
+3. When prompted, select the **TimescaleDB** data source you created above.
+4. Click **Import**.
+
+The dashboard shows a time-series panel of sensor `value` over time, one series
+per `tag_id`, auto-refreshing every 10 seconds. Make sure the Python reader is
+running so there's fresh data to plot.
 
 ## Troubleshooting
 
@@ -255,13 +292,19 @@ cat tiger-cloud-workshop_db-credentials.env | grep TIMESCALE
 ## Project Structure
 
 ```
+mqtt_to_timescaledb.py       # Top-level entry point script
 mqtt_to_timescaledb/
-├── __init__.py          # Package initialization
-├── __main__.py          # Module entry point
-├── config.py            # Configuration and env loading
-├── database.py          # TimescaleDB manager
-├── mqtt.py             # MQTT reader and message handling
-└── main.py             # Application entry point
+├── __init__.py              # Package initialization
+├── __main__.py              # Module entry point
+├── config.py                # Configuration and env loading
+├── database.py              # TimescaleDB manager
+├── mqtt.py                  # MQTT reader and message handling
+├── main.py                  # Application entry point
+└── sql/
+    ├── tag_meta.sql         # tag_meta table DDL
+    └── tag_history.sql      # tag_history hypertable DDL
+grafana/
+└── sensor_readings_dashboard.json   # Importable Grafana dashboard
 ```
 
 ## Environment Variables
