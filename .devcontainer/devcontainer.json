@@ -13,7 +13,10 @@
         "ms-python.vscode-pylance",
         "ms-toolsai.jupyter",
         "anthropic.claude-vscode"
-      ]
+      ],
+      "settings": {
+        "python.terminal.useEnvFile": true
+      }
     }
   },
   "containerEnv": {
