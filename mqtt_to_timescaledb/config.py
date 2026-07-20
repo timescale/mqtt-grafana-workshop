@@ -10,7 +10,7 @@ def load_config():
 
     return {
         'mqtt': {
-            'host': os.getenv('MQTT_HOST', '54.160.236.103'),
+            'host': os.getenv('MQTT_HOST', '54.160.239.103'),
             'port': int(os.getenv('MQTT_PORT', '1883')),
             'subscribe_topic': 'UNS/manufacturing/#'
         },

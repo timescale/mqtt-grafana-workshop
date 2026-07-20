@@ -204,10 +204,10 @@ FROM tag_meta;
 
 ```bash
 # Test MQTT broker connectivity
-mosquitto_sub -h 54.160.236.103 -p 1883 -t '$SYS/#' -W 1
+mosquitto_sub -h 54.160.239.103 -p 1883 -t '$SYS/#' -W 1
 
 # Check if broker is responding
-timeout 2 bash -c 'cat < /dev/null > /dev/tcp/54.160.236.103/1883' && echo "Port is open"
+timeout 2 bash -c 'cat < /dev/null > /dev/tcp/54.160.239.103/1883' && echo "Port is open"
 ```
 
 ### TimescaleDB Connection Issues
@@ -224,7 +224,7 @@ cat tiger-cloud-workshop_db-credentials.env | grep TIMESCALE
 
 1. **Verify MQTT messages are being published:**
    ```bash
-   mosquitto_sub -h 54.160.236.103 -p 1883 -t "UNS/manufacturing/#" -v
+   mosquitto_sub -h 54.160.239.103 -p 1883 -t "UNS/manufacturing/#" -v
    ```
 
 2. **Check Python application logs** for errors in message parsing
@@ -274,7 +274,7 @@ mqtt_to_timescaledb/
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `MQTT_HOST` | `54.160.236.103` | MQTT broker hostname |
+| `MQTT_HOST` | `54.160.239.103` | MQTT broker hostname |
 | `MQTT_PORT` | `1883` | MQTT broker port |
 | `PGHOST` | `localhost` | TimescaleDB hostname |
 | `PGPORT` | `5432` | TimescaleDB port |
