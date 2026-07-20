@@ -34,7 +34,7 @@ The architecture separates concerns into modular components:
 
 2. **Create environment file:**
    ```bash
-   cp tiger-cloud-workshop_db-credentials.env.example tiger-cloud-workshop_db-credentials.env
+   cp .env.example tiger-cloud-workshop_db-credentials.env
    ```
 
 3. **Fill in your Tiger Cloud credentials:**
@@ -65,27 +65,6 @@ mosquitto_sub -h 54.160.236.103 -p 1883 -t "UNS/manufacturing/#" -v
 mosquitto_sub -h 54.160.236.103 -p 1883 -t "UNS/manufacturing/plant1/area1/machine1/#" -v
 ```
 
-### Publish Test Data
-
-In another terminal, publish a sample sensor reading:
-
-```bash
-# Publish bearing temperature reading
-mosquitto_pub -h 54.160.236.103 -p 1883 \
-  -t "UNS/manufacturing/plant1/area1/machine1/bearing_temperature" \
-  -m '{
-    "timestamp": "2024-07-11 10:30:00",
-    "value": 65.3,
-    "unit": "°C",
-    "description": "Bearing temperature sensor"
-  }'
-```
-
-**Message Format:**
-- `timestamp` (required) — ISO 8601 or standard datetime format
-- `value` (required) — Numeric sensor reading
-- `unit` (optional) — Unit of measurement (°C, °F, RPM, etc.)
-- `description` (optional) — Human-readable description
 
 ## How to Connect and Test Tiger Cloud with psql
 
