@@ -70,6 +70,21 @@ mosquitto_sub -h 54.160.239.103 -p 1883 -t "UNS/manufacturing/plant1/area1/machi
 
 ### Connect to TimescaleDB
 
+Because the credentials file uses the standard `PG*` variable names, you can
+load it into your shell and run `psql` with no arguments — libpq reads the
+connection details (including the password) straight from the environment:
+
+```bash
+# Export everything in the credentials file, then connect
+set -a
+source .env
+set +a
+
+psql
+```
+
+Or, you can manuallly enter the connection details with the following command:
+
 ```bash
 # Connect to your TimescaleDB instance
 psql -h your-timescale-host -U your-username -d sensor_data -W
@@ -77,23 +92,31 @@ psql -h your-timescale-host -U your-username -d sensor_data -W
 # Enter your password when prompted
 ```
 
-### Verify Tables and Schema
+### Create/Verify Tables and Schema
+
+#### Load the schema from the SQL files
+
+Instead of letting the Python application create the tables on startup, you can
+load them manually. Run the files in order — `tag_meta.sql` first, since
+`tag_history` has a foreign key to it. Assuming your credentials are already
+exported (see above), `psql` picks up the connection details automatically:
+
+```bash
+psql -f mqtt_to_timescaledb/sql/tag_meta.sql
+psql -f mqtt_to_timescaledb/sql/tag_history.sql
+```
+
+#### Verify the tables
 
 ```sql
 -- List all tables
 \dt
 
--- Check tag_metadata table
-SELECT * FROM tag_metadata LIMIT 10;
-
--- Check sensor_readings hypertable
-SELECT * FROM sensor_readings LIMIT 10;
-
 -- View table structure
-\d tag_metadata
-\d sensor_readings
+\d tag_meta
+\d tag_history
 
--- Check if sensor_readings is a hypertable
+-- Check if tag_history is a hypertable
 SELECT * FROM timescaledb_information.hypertables;
 ```
 
@@ -102,7 +125,7 @@ SELECT * FROM timescaledb_information.hypertables;
 ```sql
 -- Get latest readings for a specific tag
 SELECT time, value, tag_id 
-FROM sensor_readings 
+FROM tag_history 
 WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
 ORDER BY time DESC 
 LIMIT 10;
@@ -114,14 +137,14 @@ SELECT
   AVG(value) AS avg_value,
   MAX(value) AS max_value,
   MIN(value) AS min_value
-FROM sensor_readings
+FROM tag_history
 WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
 GROUP BY hour, tag_id
 ORDER BY hour DESC;
 
 -- Get metadata for all tags
 SELECT tag_id, tag_name, unit, description 
-FROM tag_metadata;
+FROM tag_meta;
 ```
 
 ## How to Run the Python Code

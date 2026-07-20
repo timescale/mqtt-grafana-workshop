@@ -1,9 +1,16 @@
 """TimescaleDB management and operations."""
 
 import logging
+from pathlib import Path
+
 import psycopg2
 
 logger = logging.getLogger(__name__)
+
+# Directory holding the table-creation SQL, executed in order (FK dependencies
+# mean tag_meta must be created before tag_history).
+SQL_DIR = Path(__file__).resolve().parent / "sql"
+SCHEMA_FILES = ["tag_meta.sql", "tag_history.sql"]
 
 
 class TimescaleDBManager:
@@ -22,58 +29,19 @@ class TimescaleDBManager:
             raise
 
     def _init_tables(self):
-        """Create tables if they don't exist."""
+        """Create tables by executing the SQL files in the sql/ directory."""
         with self.conn.cursor() as cur:
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS tag_metadata (
-                    tag_id VARCHAR(255) PRIMARY KEY,
-                    tag_name VARCHAR(255) NOT NULL,
-                    unit VARCHAR(100),
-                    description TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
-            """)
-            logger.info("tag_metadata table created or already exists")
-
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS sensor_readings (
-                    time TIMESTAMP NOT NULL,
-                    tag_id VARCHAR(255) NOT NULL,
-                    value DOUBLE PRECISION NOT NULL,
-                    FOREIGN KEY (tag_id) REFERENCES tag_metadata(tag_id)
-                );
-            """)
-
-            cur.execute("""
-                SELECT EXISTS (
-                    SELECT 1 FROM information_schema.tables
-                    WHERE table_name = 'sensor_readings'
-                    AND EXISTS (
-                        SELECT 1 FROM timescaledb_information.hypertables
-                        WHERE hypertable_name = 'sensor_readings'
-                    )
-                ) AS is_hypertable;
-            """)
-            is_hypertable = cur.fetchone()[0]
-
-            if not is_hypertable:
-                try:
-                    cur.execute("""
-                        SELECT create_hypertable('sensor_readings', 'time', if_not_exists => TRUE);
-                    """)
-                    logger.info("Created hypertable: sensor_readings")
-                except psycopg2.Error as e:
-                    if "already" not in str(e):
-                        logger.warning(f"Hypertable creation: {e}")
-
+            for filename in SCHEMA_FILES:
+                path = SQL_DIR / filename
+                cur.execute(path.read_text())
+                logger.info(f"Applied schema file: {filename}")
             self.conn.commit()
 
     def insert_metadata(self, tag_id, tag_name, unit, description):
         """Insert or update tag metadata."""
         with self.conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO tag_metadata (tag_id, tag_name, unit, description)
+                INSERT INTO tag_meta (tag_id, tag_name, unit, description)
                 VALUES (%s, %s, %s, %s)
                 ON CONFLICT (tag_id) DO UPDATE SET
                     tag_name = EXCLUDED.tag_name,
@@ -87,7 +55,7 @@ class TimescaleDBManager:
         """Insert a sensor reading."""
         with self.conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO sensor_readings (time, tag_id, value)
+                INSERT INTO tag_history (time, tag_id, value)
                 VALUES (%s, %s, %s);
             """, (timestamp, tag_id, value))
             self.conn.commit()
