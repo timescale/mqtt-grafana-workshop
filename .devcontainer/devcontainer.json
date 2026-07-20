@@ -15,7 +15,8 @@
         "anthropic.claude-vscode"
       ],
       "settings": {
-        "python.terminal.useEnvFile": true
+        "python.terminal.useEnvFile": true,
+        "terminal.integrated.sendKeybindingsToShell": true
       }
     }
   },
