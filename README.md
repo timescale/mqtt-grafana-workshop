@@ -1,6 +1,6 @@
 # MQTT to TimescaleDB Workshop
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/TigerDoug/codespace_test)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/timescale/mqtt-grafana-workshop)
 
 A practical workshop for streaming manufacturing sensor data from MQTT to TimescaleDB on Tiger Cloud.
 
