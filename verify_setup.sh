@@ -22,7 +22,11 @@ psql --version >/dev/null \
   || { echo "FAILED: psql not found"; exit 1; }
 
 echo "Checking Grafana (port 3000)..."
-curl -sf http://localhost:3000/api/health >/dev/null \
+# Grafana runs in a separate container on the compose network, reachable as
+# `grafana:3000` from the app container. Fall back to localhost in case this
+# script is run directly on the host.
+curl -sf http://grafana:3000/api/health >/dev/null \
+  || curl -sf http://localhost:3000/api/health >/dev/null \
   || { echo "FAILED: Grafana not responding on port 3000"; exit 1; }
 
 echo "Success"
