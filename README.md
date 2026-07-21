@@ -4,7 +4,7 @@
 
 A practical workshop for streaming manufacturing sensor data from MQTT to TimescaleDB on Tiger Cloud.
 
-## Overview
+## 1. Overview
 
 This project demonstrates a real-time data pipeline:
 1. **MQTT Broker** — Publishes sensor data from manufacturing equipment
@@ -17,7 +17,7 @@ The architecture separates concerns into modular components:
 - `mqtt.py` — MQTT subscription and message handling
 - `main.py` — Application lifecycle and signal handling
 
-## Prerequisites
+## 2. Prerequisites
 
 - Python 3.8+
 - `mosquitto-clients` (for MQTT testing)
@@ -25,7 +25,7 @@ The architecture separates concerns into modular components:
 - TimescaleDB connection details (host, port, credentials)
 - MQTT broker access
 
-## Installation
+## 3. Installation
 
 1. **Verify your environment is set up correctly:**
 
@@ -70,9 +70,9 @@ The architecture separates concerns into modular components:
    MQTT_PORT=1883
    ```
 
-## How to Test MQTT Stream with Mosquitto
+## 4. How to Test MQTT Stream with Mosquitto
 
-### Subscribe to Test Topics
+### a. Subscribe to Test Topics
 
 Open a terminal and subscribe to the manufacturing sensor topics:
 
@@ -85,9 +85,9 @@ mosquitto_sub -h 54.160.239.103 -p 1883 -t "UNS/manufacturing/plant1/area1/machi
 ```
 
 
-## How to Connect and Test Tiger Cloud with psql
+## 5. How to Connect and Test Tiger Cloud with psql
 
-### Connect to TimescaleDB
+### a. Connect to TimescaleDB
 
 Because the credentials file uses the standard `PG*` variable names, you can
 load it into your shell and run `psql` with no arguments — libpq reads the
@@ -111,7 +111,7 @@ psql -h your-timescale-host -U your-username -d sensor_data -W
 # Enter your password when prompted
 ```
 
-### Create/Verify Tables and Schema
+### b. Create/Verify Tables and Schema
 
 #### Load the schema from the SQL files
 
@@ -153,9 +153,9 @@ When you're done, sign out of the session:
 \q
 ```
 
-## How to Run the Python Code
+## 6. How to Run the Python Code
 
-### Quick Start
+### a. Quick Start
 
 ```bash
 python mqtt_to_timescaledb.py
@@ -168,7 +168,7 @@ The application will:
 4. Process incoming messages and store readings in the database
 5. Log all activities to console
 
-### Graceful Shutdown
+### b. Graceful Shutdown
 
 Press `Ctrl+C` to trigger graceful shutdown:
 - Stops MQTT subscription
@@ -182,7 +182,7 @@ Press `Ctrl+C` to trigger graceful shutdown:
 > Command Palette) and open a new one. Opening the Codespace in the VS Code
 > desktop app also restores normal `Ctrl+C` behavior.
 
-### Monitor Logs
+### c. Monitor Logs
 
 The application logs important events:
 ```
@@ -191,7 +191,7 @@ The application logs important events:
 2024-07-11 10:15:25 - mqtt_to_timescaledb - INFO - Inserted plant1/area1/machine1/bearing_temperature: 65.3 °C at 2024-07-11 10:30:00
 ```
 
-## Query Sensor Data
+## 7. Query Sensor Data
 
 Sign in to an interactive `psql` session:
 
@@ -220,11 +220,11 @@ When you're done, sign out of the session:
 \q
 ```
 
-## Visualize in Grafana
+## 8. Visualize in Grafana
 
 Grafana runs alongside the app and is forwarded on port **3000**. Open with the 'open in browser' icon in the PORTS tab. Log in with username `admin` and password `admin` (see `.devcontainer/docker-compose.yml`).
 
-### 1. Add the TimescaleDB data source
+### a. Add the TimescaleDB data source
 
 1. In Grafana, go to **Connections → Data sources → Add data source → PostgreSQL**.
 2. Fill in your Tiger Cloud credentials (the same `PG*` values from
@@ -243,7 +243,7 @@ Grafana runs alongside the app and is forwarded on port **3000**. Open with the 
 
 3. Click **Save & test** — you should see a success message.
 
-### 2. Import the dashboard
+### b. Import the dashboard
 
 1. Go to **Dashboards → New → Import**.
 2. Click **Upload dashboard JSON file** and choose
@@ -256,9 +256,9 @@ The dashboard shows a time-series panel of sensor `value` over time, one series
 per `tag_id`, auto-refreshing every 10 seconds. Make sure the Python reader is
 running so there's fresh data to plot.
 
-## Troubleshooting
+## 9. Troubleshooting
 
-### MQTT Connection Issues
+### a. MQTT Connection Issues
 
 ```bash
 # Test MQTT broker connectivity
@@ -268,7 +268,7 @@ mosquitto_sub -h 54.160.239.103 -p 1883 -t '$SYS/#' -W 1
 timeout 2 bash -c 'cat < /dev/null > /dev/tcp/54.160.239.103/1883' && echo "Port is open"
 ```
 
-### TimescaleDB Connection Issues
+### b. TimescaleDB Connection Issues
 
 ```bash
 # Test connection manually
@@ -278,7 +278,7 @@ psql -h your-timescale-host -U your-username -d sensor_data -c "SELECT version()
 cat .env | grep PG
 ```
 
-### No Data Appearing in Database
+### c. No Data Appearing in Database
 
 1. **Verify MQTT messages are being published:**
    ```bash
@@ -294,9 +294,9 @@ cat .env | grep PG
    SELECT table_name FROM information_schema.tables WHERE table_schema='public';
    ```
 
-## Workshop Tasks
+## 10. Workshop Tasks
 
-### Level 1: Basic Setup
+### a. Level 1: Basic Setup
 - [ ] Clone or open in Codespaces
 - [ ] Install dependencies (`pip install -r requirements.txt`)
 - [ ] Configure TimescaleDB credentials
@@ -304,19 +304,19 @@ cat .env | grep PG
 - [ ] Publish a test MQTT message
 - [ ] Verify data in database with `psql`
 
-### Level 2: Intermediate
+### b. Level 2: Intermediate
 - [ ] Subscribe to MQTT topics with `mosquitto_sub`
 - [ ] Publish multiple sensor readings with different tags
 - [ ] Query data using TimescaleDB time-bucket aggregations
 - [ ] Modify the message format and re-run application
 
-### Level 3: Advanced
+### c. Level 3: Advanced
 - [ ] Create additional SQL views for common queries
 - [ ] Add continuous aggregates in TimescaleDB
 - [ ] Modify the Python code to handle additional payload fields
 - [ ] Set up monitoring/alerting for sensor thresholds
 
-## Project Structure
+## 11. Project Structure
 
 ```
 mqtt_to_timescaledb.py       # Top-level entry point script
@@ -334,7 +334,7 @@ grafana/
 └── sensor_readings_dashboard.json   # Importable Grafana dashboard
 ```
 
-## Environment Variables
+## 12. Environment Variables
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
@@ -346,7 +346,7 @@ grafana/
 | `PGUSER` | `postgres` | Database user |
 | `PGPASSWORD` | `password` | Database password |
 
-## Next Steps
+## 13. Next Steps
 
 - **Scale the pipeline:** Add message queuing, batch inserts, or compression
 - **Visualization:** Connect Grafana or similar tools to TimescaleDB
@@ -354,7 +354,7 @@ grafana/
 - **Data retention:** Configure TimescaleDB compression and data retention policies
 - **Testing:** Add unit tests for message parsing and database operations
 
-## Resources
+## 14. Resources
 
 - [MQTT Protocol](https://mqtt.org/)
 - [TimescaleDB Documentation](https://docs.timescale.com/)
@@ -362,7 +362,7 @@ grafana/
 - [PostgreSQL Client (psql)](https://www.postgresql.org/docs/current/app-psql.html)
 - [Tiger Cloud](https://tigerdata.com/)
 
-## Support
+## 15. Support
 
 For questions or issues:
 1. Check the Troubleshooting section above
