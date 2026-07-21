@@ -4,7 +4,7 @@
 
 A practical workshop for streaming manufacturing sensor data from MQTT to TimescaleDB on Tiger Cloud.
 
-## 1. Overview
+## Overview
 
 This project demonstrates a real-time data pipeline:
 1. **MQTT Broker** — Publishes sensor data from manufacturing equipment
@@ -17,7 +17,7 @@ The architecture separates concerns into modular components:
 - `mqtt.py` — MQTT subscription and message handling
 - `main.py` — Application lifecycle and signal handling
 
-## 2. Prerequisites (include in codespace)
+## Prerequisites (include in codespace)
 
 - Python 3.8+
 - `mosquitto-clients` (for MQTT testing)
@@ -25,9 +25,9 @@ The architecture separates concerns into modular components:
 - TimescaleDB connection details (host, port, credentials)
 - MQTT broker access
 
-## 3. Installation
+## 1. Setup
 
-1. **Verify your environment is set up correctly:**
+### a. Verify Codespace
 
    The devcontainer installs everything automatically, so start by confirming
    each tool is available. Run the verification script:
@@ -45,13 +45,14 @@ The architecture separates concerns into modular components:
 
    If any check fails, the script stops and prints which tool is missing.
 
+### b. Create environment File
 
-2. **Create environment file:**
    ```bash
    cp .env.example .env
    ```
 
-3. **Fill in your Tiger Cloud credentials:**
+### c. Fill in your Tiger Cloud credentials
+
    ```bash
    # Edit .env with:
    PGPASSWORD=your-password
@@ -65,7 +66,7 @@ The architecture separates concerns into modular components:
    MQTT_PORT=1883
    ```
 
-## 4. How to Test MQTT Stream with Mosquitto
+## 2. Test MQTT Stream with Mosquitto
 
 ### a. Subscribe to Test Topics
 
@@ -77,33 +78,25 @@ mosquitto_sub -h 54.160.239.103 -p 1883 -t "UNS/manufacturing/#" -v
 ```
 
 
-## 5. How to Connect and Test Tiger Cloud with psql
+## 3. Test Tiger Cloud with psql
 
-### a. Connect to TimescaleDB
+### a. Load .env and check connection to TimescaleDB
 
 Because the credentials file uses the standard `PG*` variable names, you can
 load it into your shell and run `psql` with no arguments — libpq reads the
 connection details (including the password) straight from the environment:
 
 ```bash
-# Export everything in the credentials file, then connect
+# Export everything in the credentials file, then verify the connection
 set -a
 source .env
 set +a
 
-psql
+# Connect, print connection info, and exit
+psql -c '\conninfo'
 ```
 
-Or, you can manuallly enter the connection details with the following command:
-
-```bash
-# Connect to your TimescaleDB instance
-psql -h your-timescale-host -U your-username -d sensor_data -W
-
-# Enter your password when prompted
-```
-
-### b. Create/Verify Tables and Schema
+### b. Create/Verify Tables and Schema (optional)
 
 #### Load the schema from the SQL files
 
@@ -117,35 +110,7 @@ psql -f mqtt_to_timescaledb/sql/tag_meta.sql
 psql -f mqtt_to_timescaledb/sql/tag_history.sql
 ```
 
-#### Verify the tables
-
-Sign in to an interactive `psql` session:
-
-```bash
-psql
-```
-
-Then run the verification commands:
-
-```sql
--- List all tables
-\dt
-
--- View table structure
-\d tag_meta
-\d tag_history
-
--- Check if tag_history is a hypertable
-SELECT * FROM timescaledb_information.hypertables;
-```
-
-When you're done, sign out of the session:
-
-```sql
-\q
-```
-
-## 6. How to Run the Python Code
+## 4. Run the Python Code
 
 ### a. Quick Start
 
@@ -183,7 +148,7 @@ The application logs important events:
 2024-07-11 10:15:25 - mqtt_to_timescaledb - INFO - Inserted plant1/area1/machine1/bearing_temperature: 65.3 °C at 2024-07-11 10:30:00
 ```
 
-## 7. Query Sensor Data
+## 5. Query Sensor Data
 
 Sign in to an interactive `psql` session:
 
@@ -194,16 +159,23 @@ psql
 Then run the queries:
 
 ```sql
--- Get latest readings for a specific tag
-SELECT time, value, tag_id 
-FROM tag_history 
-WHERE tag_id = 'plant1/area1/machine1/bearing_temperature'
-ORDER BY time DESC 
+-- Get the last 10 readings
+SELECT time, value, tag_id
+FROM tag_history
+ORDER BY time DESC
 LIMIT 10;
 
--- Get metadata for all tags
-SELECT tag_id, tag_name, unit, description 
-FROM tag_meta;
+-- Minute-by-minute averages, joined with tag metadata
+SELECT time_bucket('1 minute', h.time) AS minute,
+       h.tag_id,
+       m.tag_name,
+       m.unit,
+       avg(h.value) AS avg_value
+FROM tag_history h
+JOIN tag_meta m ON m.tag_id = h.tag_id
+WHERE h.tag_id = 'plant1/area1/machine1/bearing_temperature'
+GROUP BY minute, h.tag_id, m.tag_name, m.unit
+ORDER BY minute DESC;
 ```
 
 When you're done, sign out of the session:
@@ -212,7 +184,7 @@ When you're done, sign out of the session:
 \q
 ```
 
-## 8. Visualize in Grafana
+## 6. Visualize in Grafana
 
 Grafana runs alongside the app and is forwarded on port **3000**. Open with the 'open in browser' icon in the PORTS tab. Log in with username `admin` and password `admin` (see `.devcontainer/docker-compose.yml`).
 
