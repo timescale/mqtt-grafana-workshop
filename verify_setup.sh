@@ -13,7 +13,8 @@ python3 -c "import paho.mqtt.client, psycopg2, dotenv" \
   || { echo "FAILED: Python dependencies missing"; exit 1; }
 
 echo "Checking Mosquitto MQTT client..."
-mosquitto_sub --version >/dev/null \
+# Note: `mosquitto_sub --version` exits non-zero, so check for the binary itself.
+command -v mosquitto_sub >/dev/null \
   || { echo "FAILED: mosquitto_sub not found"; exit 1; }
 
 echo "Checking PostgreSQL client (psql)..."
