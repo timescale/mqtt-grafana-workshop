@@ -17,7 +17,7 @@ The architecture separates concerns into modular components:
 - `mqtt.py` — MQTT subscription and message handling
 - `main.py` — Application lifecycle and signal handling
 
-## 2. Prerequisites
+## 2. Prerequisites (include in codespace)
 
 - Python 3.8+
 - `mosquitto-clients` (for MQTT testing)
@@ -30,25 +30,20 @@ The architecture separates concerns into modular components:
 1. **Verify your environment is set up correctly:**
 
    The devcontainer installs everything automatically, so start by confirming
-   each tool is available:
+   each tool is available. Run the verification script:
 
    ```bash
-
-   # Python + dependencies (paho-mqtt, psycopg2, python-dotenv)
-   python3 -c "import paho.mqtt.client, psycopg2, dotenv; print('Python dependencies OK')"
-
-   # Mosquitto MQTT client
-   mosquitto_sub --version
-
-   # PostgreSQL client
-   psql --version
-
-   # Grafana (runs on port 3000)
-   curl -s http://localhost:3000/api/health
-   
+   ./verify_setup.sh
    ```
 
-   Each command should run without errors
+   It prints `Success` when everything is ready. The script runs these checks:
+
+   - **Python + dependencies** — `paho-mqtt`, `psycopg2`, `python-dotenv` import cleanly
+   - **Mosquitto MQTT client** — `mosquitto_sub` is installed
+   - **PostgreSQL client** — `psql` is installed
+   - **Grafana** — responding on port 3000
+
+   If any check fails, the script stops and prints which tool is missing.
 
 
 2. **Create environment file:**
