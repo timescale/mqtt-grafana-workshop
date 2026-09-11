@@ -16,7 +16,8 @@
       ],
       "settings": {
         "python.terminal.useEnvFile": true,
-        "terminal.integrated.sendKeybindingsToShell": true
+        "terminal.integrated.sendKeybindingsToShell": true,
+        "workbench.secondarySideBar.defaultVisibility": "hidden"
       }
     }
   },
